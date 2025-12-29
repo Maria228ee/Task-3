@@ -1,0 +1,84 @@
+import java.util.Locale; import java.util.Scanner;
+
+public class Main {
+
+public static final VerticalParabola P = new VerticalParabola(0, -5, -1);
+public static final Line L1 = new Line(2,5,-0.5);
+public static final Line L2 = new Line(1,1,0);
+public static final Line L3 = new Line(1,-2,0);
+public static final Line L4 = new Line(1,-2,0.5);
+
+
+public static SimpleColor getColor(double x, double y) {
+
+    if (L1.isPointAboveLine(x, y) && L2.isPointAboveLine(x, y) && L4.isPointAboveLine(x, y) && P.isPointAboveParabola(x, y)) {
+        return SimpleColor.BLUE;
+    }
+    if (L3.isPointAboveLine(x, y) && !L2.isPointAboveLine(x, y) && L4.isPointAboveLine(x, y) && !L1.isPointAboveLine(x, y)) {
+        return SimpleColor.ORANGE;
+    }
+    if (L2.isPointAboveLine(x, y) && !L4.isPointAboveLine(x, y)) {
+        return SimpleColor.ORANGE;
+    }
+    if (L1.isPointAboveLine(x, y) && !P.isPointAboveParabola(x, y)) {
+        return SimpleColor.GREEN;
+    }
+    if (L3.isPointAboveLine(x, y) && !L4.isPointAboveLine(x, y) && !L1.isPointAboveLine(x, y)) {
+        return SimpleColor.BLUE;
+    }
+    if (L2.isPointAboveLine(x, y) && !L1.isPointAboveLine(x, y)) {
+        return SimpleColor.GREEN;
+    }
+    if (!P.isPointAboveParabola(x, y) && !L1.isPointAboveLine(x, y)) {
+        return SimpleColor.YELLOW;
+    }
+    if (!L1.isPointAboveLine(x, y) && !L3.isPointAboveLine(x, y) && P.isPointAboveParabola(x, y)) {
+        return SimpleColor.GRAY;
+    }
+    return SimpleColor.BLACK;
+}
+
+
+public static void printColorForPoint(double x, double y) {
+    System.out.printf("(%.3f, %.3f) -> %s%n", x, y, getColor(x, y));
+}
+
+
+public static void tests() {
+    printColorForPoint(6, 6);
+    printColorForPoint(0, 5);
+    printColorForPoint(-8, -3);
+    printColorForPoint(3, -3);
+}
+
+
+public static void main(String[] args) {
+    Locale.setDefault(Locale.ROOT);
+
+    tests();
+
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Input x, y: ");
+    double x = scanner.nextDouble();
+    double y = scanner.nextDouble();
+
+    printColorForPoint(x, y);
+}
+}
+
+public enum SimpleColor { BLACK, WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, BLUE; }
+
+public class Line { public double x0; public double y0; public double a;
+
+public Line(double x0, double y0, double a) {
+    this.x0 = x0;
+    this.y0 = y0;
+    this.a = a;
+}
+
+public boolean isPointAboveLine(double x, double y) {
+    return y > a * (x - x0) + y0;
+}
+}
+
+public class VerticalParabola { public final double x0, y0, a; public VerticalParabola(double x0, double y0, double a) { this.x0 = x0; this.y0 = y0; this.a = a; } public boolean isPointAboveParabola(double x, double y) { return y > a * Math.pow(x - x0, 2) + y0; } }
